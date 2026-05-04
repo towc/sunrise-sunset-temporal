@@ -2,7 +2,7 @@
  * Time conversion utilities for Solar Position Algorithm
  */
 
-import { limitZero2one } from './math';
+import { limitZero2one } from './math.ts';
 
 /**
  * Convert day fraction to local hour

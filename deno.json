@@ -1,0 +1,32 @@
+{
+  "name": "@cpt/sunrise-sunset",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": "./src/index.ts",
+  "exclude": [
+    "demo/",
+    "dist/",
+    "node_modules/",
+    "tests/",
+    "scripts/",
+    ".github/",
+    ".npmignore",
+    ".travis.yml",
+    "package-lock.json",
+    "package.json",
+    "rolldown.config.js",
+    "tsconfig.json",
+    "vitest.config.js"
+  ],
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "temporal-polyfill/": "npm:temporal-polyfill@0.2.0/",
+    "temporal-spec": "npm:temporal-spec@0.3.0"
+  },
+  "compilerOptions": {
+    "types": ["npm:temporal-spec"]
+  }
+}

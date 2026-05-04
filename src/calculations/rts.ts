@@ -3,8 +3,8 @@
  * Handles high-latitude edge cases (polar day/night)
  */
 
-import { SUN_RADIUS, INVALID_VALUE } from '../constants';
-import { JDSign, SunState, SpaData } from '../types';
+import { SUN_RADIUS, INVALID_VALUE } from '../constants.ts';
+import { JDSign, SunState, SpaData } from '../types.ts';
 import {
   deg2rad,
   rad2deg,
@@ -12,10 +12,10 @@ import {
   limitDegrees180pm,
   limitZero2one,
   limitMinutes,
-} from '../utils/math';
-import { julianDay } from '../utils/date';
-import { dayfracToLocalHr } from '../utils/time';
-import { sunMeanLongitude } from './sun';
+} from '../utils/math.ts';
+import { julianDay } from '../utils/date.ts';
+import { dayfracToLocalHr } from '../utils/time.ts';
+import { sunMeanLongitude } from './sun.ts';
 
 /**
  * Calculate sun hour angle at rise/set for a given zenith

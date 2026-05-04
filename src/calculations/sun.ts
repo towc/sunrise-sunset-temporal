@@ -3,7 +3,7 @@
  * Calculates geocentric position, right ascension, declination
  */
 
-import { deg2rad, rad2deg, limitDegrees } from '../utils/math';
+import { deg2rad, rad2deg, limitDegrees } from '../utils/math.ts';
 
 /**
  * Calculate geocentric longitude from heliocentric longitude

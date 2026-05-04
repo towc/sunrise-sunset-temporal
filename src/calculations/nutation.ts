@@ -11,8 +11,8 @@ import {
   TERM_PSI_B,
   TERM_EPS_C,
   TERM_EPS_D,
-} from '../constants';
-import { deg2rad, thirdOrderPolynomial } from '../utils/math';
+} from '../constants.ts';
+import { deg2rad, thirdOrderPolynomial } from '../utils/math.ts';
 
 /**
  * Nutation calculation result

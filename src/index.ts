@@ -10,24 +10,24 @@ import {
   SpaOptions,
   SolarPosition,
   TwilightTimes,
-} from './types';
+} from './types.ts';
 import {
   ZENITH_CIVIL_TWILIGHT,
   ZENITH_NAUTICAL_TWILIGHT,
   ZENITH_ASTRONOMICAL_TWILIGHT,
   ZENITH_GOLDEN_HOUR,
   ZENITH_BLUE_HOUR,
-} from './constants';
-import { fractionalHourToInstant } from './utils/time';
+} from './constants.ts';
+import { fractionalHourToInstant } from './utils/time.ts';
 import {
   initSpaFromTemporal,
   spaCalculate,
   isValidSunTime,
-} from './spa';
-import { calculateCustomZenithTimes } from './calculations/rts';
+} from './spa.ts';
+import { calculateCustomZenithTimes } from './calculations/rts.ts';
 
 // Re-export types for consumers
-export type { SpaOptions, SolarPosition, TwilightTimes } from './types';
+export type { SpaOptions, SolarPosition, TwilightTimes } from './types.ts';
 
 /**
  * Get the sunrise time for a given location and date

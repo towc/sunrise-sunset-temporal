@@ -16,8 +16,8 @@ import {
   TERM_A,
   TERM_B,
   TERM_C,
-} from '../constants';
-import { rad2deg, limitDegrees } from '../utils/math';
+} from '../constants.ts';
+import { rad2deg, limitDegrees } from '../utils/math.ts';
 
 /**
  * Calculate the sum of periodic terms for a given series

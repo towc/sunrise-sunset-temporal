@@ -6,8 +6,8 @@
  * to determine precise solar position and rise/transit/set times.
  */
 
-import { SpaData, SpaFunction, SpaOptions } from './types';
-import { REFRACTION_CORRECTION, INVALID_VALUE } from './constants';
+import { SpaData, SpaFunction, SpaOptions } from './types.ts';
+import { REFRACTION_CORRECTION, INVALID_VALUE } from './constants.ts';
 import {
   julianDay,
   julianCentury,
@@ -15,12 +15,12 @@ import {
   julianEphemerisCentury,
   julianEphemerisMillennium,
   resolveDateTimeComponents,
-} from './utils/date';
+} from './utils/date.ts';
 import {
   earthHeliocentricLongitude,
   earthHeliocentricLatitude,
   earthRadiusVector,
-} from './calculations/earth';
+} from './calculations/earth.ts';
 import {
   geocentricLongitude,
   geocentricLatitude,
@@ -29,7 +29,7 @@ import {
   geocentricRightAscension,
   geocentricDeclination,
   sunEquatorialHorizontalParallax,
-} from './calculations/sun';
+} from './calculations/sun.ts';
 import {
   meanElongationMoonSun,
   meanAnomalySun,
@@ -39,7 +39,7 @@ import {
   nutationLongitudeAndObliquity,
   eclipticMeanObliquity,
   eclipticTrueObliquity,
-} from './calculations/nutation';
+} from './calculations/nutation.ts';
 import {
   greenwichMeanSiderealTime,
   greenwichSiderealTime,
@@ -54,8 +54,8 @@ import {
   topocentricAzimuthAngleAstro,
   topocentricAzimuthAngle,
   surfaceIncidenceAngle,
-} from './calculations/observer';
-import { calculateEotAndSunRiseTransitSet } from './calculations/rts';
+} from './calculations/observer.ts';
+import { calculateEotAndSunRiseTransitSet } from './calculations/rts.ts';
 
 /**
  * Create a new SpaData object with default values

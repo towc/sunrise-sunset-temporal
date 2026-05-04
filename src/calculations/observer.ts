@@ -2,9 +2,9 @@
  * Observer position and topocentric calculations for Solar Position Algorithm
  */
 
-import { SUN_RADIUS } from '../constants';
-import { deg2rad, rad2deg, limitDegrees } from '../utils/math';
-import { ParallaxResult } from '../types';
+import { SUN_RADIUS } from '../constants.ts';
+import { deg2rad, rad2deg, limitDegrees } from '../utils/math.ts';
+import { ParallaxResult } from '../types.ts';
 
 /**
  * Calculate Greenwich mean sidereal time

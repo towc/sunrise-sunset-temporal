@@ -2,7 +2,7 @@
  * Mathematical utility functions for Solar Position Algorithm
  */
 
-import { PI } from '../constants';
+import { PI } from '../constants.ts';
 
 /**
  * Convert degrees to radians
