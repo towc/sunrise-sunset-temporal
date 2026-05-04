@@ -2,7 +2,6 @@
  * Time conversion utilities for Solar Position Algorithm
  */
 
-import { Temporal } from '../temporal';
 import { limitZero2one } from './math';
 
 /**

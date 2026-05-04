@@ -2,7 +2,6 @@
  * Date and Julian day calculation utilities for Solar Position Algorithm
  */
 
-import { Temporal } from '../temporal';
 
 export interface DateTimeComponents {
   year: number;

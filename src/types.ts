@@ -3,7 +3,6 @@
  * Based on NREL's Solar Position Algorithm for Solar Radiation Applications
  */
 
-import type { Temporal } from '@js-temporal/polyfill';
 
 /**
  * Output calculation modes

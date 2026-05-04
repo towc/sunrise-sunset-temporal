@@ -1,5 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
-
 declare module 'sunrise-sunset-js' {
   /**
    * Optional parameters for SPA calculations

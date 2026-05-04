@@ -5,7 +5,7 @@
  * @module sunrise-sunset
  */
 
-import { Temporal } from './temporal';
+import 'temporal-polyfill/global';
 import {
   SpaOptions,
   SolarPosition,

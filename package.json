@@ -1,6 +1,6 @@
 {
   "name": "sunrise-sunset-temporal",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "High-precision sunrise and sunset time calculation using NREL's Solar Position Algorithm",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -67,5 +67,8 @@
   "bugs": {
     "url": "https://github.com/udivankin/sunrise-sunset/issues"
   },
-  "homepage": "https://github.com/udivankin/sunrise-sunset#readme"
+  "homepage": "https://github.com/udivankin/sunrise-sunset#readme",
+  "dependencies": {
+    "temporal-polyfill": "^0.3.2"
+  }
 }

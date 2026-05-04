@@ -6,7 +6,6 @@
  * to determine precise solar position and rise/transit/set times.
  */
 
-import type { Temporal } from '@js-temporal/polyfill';
 import { SpaData, SpaFunction, SpaOptions } from './types';
 import { REFRACTION_CORRECTION, INVALID_VALUE } from './constants';
 import {
