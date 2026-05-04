@@ -9,15 +9,14 @@
  */
 export declare function dayfracToLocalHr(dayfrac: number, timezone: number): number;
 /**
- * Convert fractional hours to Date object
- * @param year - Local calendar year for the calculated sun time
- * @param month - Local calendar month for the calculated sun time
- * @param day - Local calendar day for the calculated sun time
- * @param fractionalHour - Hour as fractional value (0-24)
- * @param timezone - Timezone offset in hours (negative west of Greenwich)
- * @returns Date object representing the time
+ * Convert fractional hours to Temporal.Instant
+ * @param year - UTC calendar year for the calculated sun time
+ * @param month - UTC calendar month for the calculated sun time
+ * @param day - UTC calendar day for the calculated sun time
+ * @param fractionalHour - Hour as fractional value (relative to UTC midnight, can exceed 24 or be negative)
+ * @returns Temporal.Instant representing the time, or null for invalid values
  */
-export declare function fractionalHourToDate(year: number, month: number, day: number, fractionalHour: number, timezone: number): Date;
+export declare function fractionalHourToInstant(year: number, month: number, day: number, fractionalHour: number): Temporal.Instant | null;
 /**
  * Convert fractional hours to time string (HH:MM:SS.mmm)
  * @param fractionalHour - Hour as fractional value (0-24)

@@ -1,6 +1,6 @@
 {
   "name": "sunrise-sunset-temporal",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "High-precision sunrise and sunset time calculation using NREL's Solar Position Algorithm",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -29,9 +29,9 @@ export declare function calculateGeocentricSunRaAndDec(spa: SpaData): void;
  */
 export declare function spaCalculate(spa: SpaData): number;
 /**
- * Initialize SPA data from a Date object and coordinates
+ * Initialize SPA data from a Temporal.Instant and coordinates
  */
-export declare function initSpaFromDate(date: Date, latitude: number, longitude: number, options?: SpaOptions): SpaData;
+export declare function initSpaFromTemporal(instant: Temporal.Instant, latitude: number, longitude: number, options?: SpaOptions): SpaData;
 /**
  * Check if a sunrise/sunset time is valid (not polar day/night)
  */
