@@ -6,13 +6,12 @@ This is a fork of [udivankin/sunrise-sunset](https://github.com/udivankin/sunris
 
 ⚠️ **Vibe-coded**: The updates in this fork were AI-generated. Use at your own risk. Sorry I don't have the time to do this properly myself. If you encounter problems, please don't open a PR or expect an issue to be fixed on github, instead please help the original creator in integrating temporals.
 
-📦 **Install:** `npm install sunset-sunrise-temporal`
+📦 **Install:** via deno: `import { getSunTimes } from '@cpt/sunrise-sunset'`, or check the "Use with: npm" tab in https://jsr.io/@cpt/sunrise-sunset@0.1.0
 
 🧪 **Tested with Deno only.** Some tweaks may be needed for Node.js.
 
 **Acknowledgments:** Huge thanks to [Aleksei Udivankin](https://github.com/udivankin) for creating [sunrise-sunset](https://github.com/udivankin/sunrise-sunset) and putting in the hard work of implementing the full NREL SPA algorithm in JavaScript. This fork wouldn't exist without that foundation.
 
-[![npm version](https://img.shields.io/npm/v/sunset-sunrise-temporal.svg)](https://www.npmjs.com/package/sunset-sunrise-temporal)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 
@@ -51,20 +50,12 @@ Solar Radiation Research Laboratory
 - ✅ **Timezone-agnostic API** — all results are `Temporal.Instant` (epoch)
 - ✅ **Tree-shakeable** modular architecture
 
-## Installation
-
-```bash
-npm install sunset-sunrise-temporal
-```
-
-**Requirements:** Node.js ≥18.0.0
-
-When running on a runtime without native Temporal support (e.g. Node.js without `--harmony-temporal`), the `@js-temporal/polyfill` is automatically loaded. Native Temporal is used when available (Deno, Bun, Node.js with `--harmony-temporal`).
-
 ## Quick Start
 
+Only deno, not tested in node/npm.
+
 ```typescript
-import { getSunrise, getSunset } from 'sunset-sunrise-temporal';
+import { getSunrise, getSunset } from '@cpt/sunset-sunrise';
 
 // Sunrise/sunset for today at the given coordinates
 const sunrise = getSunrise(51.5074, -0.1278);
@@ -96,9 +87,6 @@ Calculate sunrise time for a given location and date.
 **Example:**
 
 ```typescript
-import { Temporal } from '@js-temporal/polyfill'; // or native Temporal
-import { getSunrise } from 'sunset-sunrise-temporal';
-
 // Basic usage — defaults to current moment
 const sunrise = getSunrise(40.7128, -74.0060); // New York City
 
@@ -132,8 +120,6 @@ Calculate sunset time for a given location and date.
 **Example:**
 
 ```typescript
-import { getSunset } from 'sunset-sunrise-temporal';
-
 const sunset = getSunset(40.7128, -74.0060);
 
 // During midnight sun period
@@ -154,8 +140,6 @@ Calculate solar noon (sun transit) — when the sun reaches its highest point in
 **Example:**
 
 ```typescript
-import { getSolarNoon } from 'sunset-sunrise-temporal';
-
 const solarNoon = getSolarNoon(51.5074, -0.1278);
 console.log(`Solar noon: ${solarNoon?.toString()}`);
 ```
@@ -181,8 +165,6 @@ interface SolarPosition {
 **Example:**
 
 ```typescript
-import { getSolarPosition } from 'sunset-sunrise-temporal';
-
 const position = getSolarPosition(51.5074, -0.1278);
 
 if (position) {
@@ -220,8 +202,6 @@ interface TwilightTimes {
 **Example:**
 
 ```typescript
-import { getTwilight } from 'sunset-sunrise-temporal';
-
 const twilight = getTwilight(51.5074, -0.1278);
 
 if (twilight) {
@@ -249,8 +229,6 @@ interface SunTimes {
 **Example:**
 
 ```typescript
-import { getSunTimes } from 'sunset-sunrise-temporal';
-
 const times = getSunTimes(51.5074, -0.1278);
 
 console.log('Sunrise:', times.sunrise);
@@ -280,8 +258,6 @@ To display the result in a specific timezone, convert it with `instant.toZonedDa
 **Example:**
 
 ```typescript
-import { getSunrise } from 'sunset-sunrise-temporal';
-
 // Calculate for high-altitude location
 const sunrise = getSunrise(
   27.9881, // Everest Base Camp
@@ -300,8 +276,6 @@ const sunrise = getSunrise(
 ### Browser Integration with Geolocation
 
 ```typescript
-import { getSunrise, getSunset } from 'sunset-sunrise-temporal';
-
 navigator.geolocation.getCurrentPosition((position) => {
   const { latitude, longitude } = position.coords;
   
@@ -318,8 +292,6 @@ navigator.geolocation.getCurrentPosition((position) => {
 ### Annual Solar Events
 
 ```typescript
-import { getSunrise, getSunset, Temporal } from 'sunset-sunrise-temporal';
-
 function getAnnualSolarEvents(latitude: number, longitude: number, year: number) {
   const events = [];
   
@@ -346,8 +318,6 @@ const events = getAnnualSolarEvents(51.5074, -0.1278, 2024);
 ### Day Length Calculation
 
 ```typescript
-import { getSunrise, getSunset, Temporal } from 'sunset-sunrise-temporal';
-
 function getDaylightHours(latitude: number, longitude: number, instant: Temporal.Instant) {
   const sunrise = getSunrise(latitude, longitude, instant);
   const sunset = getSunset(latitude, longitude, instant);
@@ -369,8 +339,6 @@ console.log(`Daylight hours on summer solstice: ${hours.toFixed(2)}`);
 ### Golden Hour Detection
 
 ```typescript
-import { getSolarPosition, Temporal } from 'sunset-sunrise-temporal';
-
 function isGoldenHour(latitude: number, longitude: number, instant: Temporal.Instant): boolean {
   const position = getSolarPosition(latitude, longitude, instant);
   
@@ -389,8 +357,6 @@ if (isGoldenHour(51.5074, -0.1278, now)) {
 ### Converting to Any Timezone
 
 ```typescript
-import { getSunrise, Temporal } from 'sunset-sunrise-temporal';
-
 const sunrise = getSunrise(40, -70);
 
 // New York time
