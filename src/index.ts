@@ -5,6 +5,7 @@
  * @module sunrise-sunset
  */
 
+import { Temporal } from './temporal';
 import {
   SpaOptions,
   SolarPosition,
@@ -17,9 +18,9 @@ import {
   ZENITH_GOLDEN_HOUR,
   ZENITH_BLUE_HOUR,
 } from './constants';
-import { fractionalHourToDate } from './utils/time';
+import { fractionalHourToInstant } from './utils/time';
 import {
-  initSpaFromDate,
+  initSpaFromTemporal,
   spaCalculate,
   isValidSunTime,
 } from './spa';
@@ -33,35 +34,34 @@ export type { SpaOptions, SolarPosition, TwilightTimes } from './types';
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
- * @returns Date object representing sunrise time, or null if sun doesn't rise (polar night)
+ * @returns Temporal.Instant representing sunrise time, or null if sun doesn't rise (polar night)
  * 
  * @example
  * ```typescript
- * const sunrise = getSunrise(51.5074, -0.1278); // London
- * console.log(sunrise?.toLocaleTimeString());
+ * const sunrise = getSunrise(40.7128, -74.0060);
+ * console.log(sunrise?.toString());
  * ```
  */
 export function getSunrise(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
-): Date | null {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+): Temporal.Instant | null {
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0 || !isValidSunTime(spa.sunrise)) {
     return null;
   }
 
-  return fractionalHourToDate(
+  return fractionalHourToInstant(
     spa.year,
     spa.month,
     spa.day,
-    spa.sunrise,
-    spa.timezone
+    spa.sunrise
   );
 }
 
@@ -70,35 +70,34 @@ export function getSunrise(
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
- * @returns Date object representing sunset time, or null if sun doesn't set (polar day)
+ * @returns Temporal.Instant representing sunset time, or null if sun doesn't set (polar day)
  * 
  * @example
  * ```typescript
- * const sunset = getSunset(51.5074, -0.1278); // London
- * console.log(sunset?.toLocaleTimeString());
+ * const sunset = getSunset(40.7128, -74.0060);
+ * console.log(sunset?.toString());
  * ```
  */
 export function getSunset(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
-): Date | null {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+): Temporal.Instant | null {
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0 || !isValidSunTime(spa.sunset)) {
     return null;
   }
 
-  return fractionalHourToDate(
+  return fractionalHourToInstant(
     spa.year,
     spa.month,
     spa.day,
-    spa.sunset,
-    spa.timezone
+    spa.sunset
   );
 }
 
@@ -107,35 +106,34 @@ export function getSunset(
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
- * @returns Date object representing solar noon time, or null on calculation error
+ * @returns Temporal.Instant representing solar noon time, or null on calculation error
  * 
  * @example
  * ```typescript
- * const noon = getSolarNoon(51.5074, -0.1278); // London
- * console.log(noon?.toLocaleTimeString());
+ * const noon = getSolarNoon(40.7128, -74.0060);
+ * console.log(noon?.toString());
  * ```
  */
 export function getSolarNoon(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
-): Date | null {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+): Temporal.Instant | null {
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0 || !isValidSunTime(spa.suntransit)) {
     return null;
   }
 
-  return fractionalHourToDate(
+  return fractionalHourToInstant(
     spa.year,
     spa.month,
     spa.day,
-    spa.suntransit,
-    spa.timezone
+    spa.suntransit
   );
 }
 
@@ -144,23 +142,23 @@ export function getSolarNoon(
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
  * @returns Solar position object with zenith, azimuth, elevation, etc.
  * 
  * @example
  * ```typescript
- * const position = getSolarPosition(51.5074, -0.1278);
+ * const position = getSolarPosition(40.7128, -74.0060);
  * console.log(`Sun is at ${position.elevation}° elevation, ${position.azimuth}° azimuth`);
  * ```
  */
 export function getSolarPosition(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
 ): SolarPosition | null {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0) {
@@ -187,24 +185,24 @@ export function getSolarPosition(
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
  * @returns Twilight times object, with null values for polar conditions
  * 
  * @example
  * ```typescript
- * const twilight = getTwilight(51.5074, -0.1278);
- * console.log(`Civil dawn: ${twilight.civilDawn?.toLocaleTimeString()}`);
- * console.log(`Civil dusk: ${twilight.civilDusk?.toLocaleTimeString()}`);
+ * const twilight = getTwilight(40.7128, -74.0060);
+ * console.log(`Civil dawn: ${twilight.civilDawn?.toString()}`);
+ * console.log(`Civil dusk: ${twilight.civilDusk?.toString()}`);
  * ```
  */
 export function getTwilight(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
 ): TwilightTimes | null {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0 || !isValidSunTime(spa.suntransit)) {
@@ -247,34 +245,33 @@ export function getTwilight(
     ZENITH_BLUE_HOUR
   );
 
-  // Convert fractional hours to Date objects
-  const toDate = (hours: number | null): Date | null => {
-    if (hours === null || !isFinite(hours) || hours < 0 || hours > 24) {
+  // Convert fractional hours to Instants
+  const toInstant = (hours: number | null): Temporal.Instant | null => {
+    if (hours === null || !isFinite(hours)) {
       return null;
     }
-    return fractionalHourToDate(
+    return fractionalHourToInstant(
       spa.year,
       spa.month,
       spa.day,
-      hours,
-      spa.timezone
+      hours
     );
   };
 
   return {
-    civilDawn: toDate(civil.sunrise),
-    civilDusk: toDate(civil.sunset),
-    nauticalDawn: toDate(nautical.sunrise),
-    nauticalDusk: toDate(nautical.sunset),
-    astronomicalDawn: toDate(astronomical.sunrise),
-    astronomicalDusk: toDate(astronomical.sunset),
+    civilDawn: toInstant(civil.sunrise),
+    civilDusk: toInstant(civil.sunset),
+    nauticalDawn: toInstant(nautical.sunrise),
+    nauticalDusk: toInstant(nautical.sunset),
+    astronomicalDawn: toInstant(astronomical.sunrise),
+    astronomicalDusk: toInstant(astronomical.sunset),
     goldenHour: {
-      morning: { start: toDate(spa.sunrise), end: toDate(golden.sunrise) },
-      evening: { start: toDate(golden.sunset), end: toDate(spa.sunset) },
+      morning: { start: toInstant(spa.sunrise), end: toInstant(golden.sunrise) },
+      evening: { start: toInstant(golden.sunset), end: toInstant(spa.sunset) },
     },
     blueHour: {
-      morning: { start: toDate(blue.sunrise), end: toDate(spa.sunrise) },
-      evening: { start: toDate(spa.sunset), end: toDate(blue.sunset) },
+      morning: { start: toInstant(blue.sunrise), end: toInstant(spa.sunrise) },
+      evening: { start: toInstant(spa.sunset), end: toInstant(blue.sunset) },
     },
   };
 }
@@ -285,30 +282,30 @@ export function getTwilight(
  * 
  * @param latitude - Observer latitude in degrees (positive north)
  * @param longitude - Observer longitude in degrees (positive east)
- * @param date - Date for calculation (defaults to current date/time)
+ * @param instant - Point in time to calculate for (defaults to current moment)
  * @param options - Optional SPA calculation options
  * @returns Object containing sunrise, sunset, solar noon, and twilight times
  * 
  * @example
  * ```typescript
- * const times = getSunTimes(51.5074, -0.1278);
- * console.log(`Sunrise: ${times.sunrise?.toLocaleTimeString()}`);
- * console.log(`Sunset: ${times.sunset?.toLocaleTimeString()}`);
- * console.log(`Solar noon: ${times.solarNoon?.toLocaleTimeString()}`);
+ * const times = getSunTimes(40.7128, -74.0060);
+ * console.log(`Sunrise: ${times.sunrise?.toString()}`);
+ * console.log(`Sunset: ${times.sunset?.toString()}`);
+ * console.log(`Solar noon: ${times.solarNoon?.toString()}`);
  * ```
  */
 export function getSunTimes(
   latitude: number,
   longitude: number,
-  date: Date = new Date(),
+  instant: Temporal.Instant = Temporal.Now.instant(),
   options?: SpaOptions
 ): {
-  sunrise: Date | null;
-  sunset: Date | null;
-  solarNoon: Date | null;
+  sunrise: Temporal.Instant | null;
+  sunset: Temporal.Instant | null;
+  solarNoon: Temporal.Instant | null;
   twilight: TwilightTimes | null;
 } {
-  const spa = initSpaFromDate(date, latitude, longitude, options);
+  const spa = initSpaFromTemporal(instant, latitude, longitude, options);
   const result = spaCalculate(spa);
 
   if (result !== 0) {
@@ -320,16 +317,15 @@ export function getSunTimes(
     };
   }
 
-  const toDate = (hours: number): Date | null => {
+  const toInstant = (hours: number): Temporal.Instant | null => {
     if (!isValidSunTime(hours)) {
       return null;
     }
-    return fractionalHourToDate(
+    return fractionalHourToInstant(
       spa.year,
       spa.month,
       spa.day,
-      hours,
-      spa.timezone
+      hours
     );
   };
 
@@ -371,41 +367,40 @@ export function getSunTimes(
       ZENITH_BLUE_HOUR
     );
 
-    const twilightToDate = (hours: number | null): Date | null => {
-      if (hours === null || !isFinite(hours) || hours < 0 || hours > 24) {
+    const twilightToInstant = (hours: number | null): Temporal.Instant | null => {
+      if (hours === null || !isFinite(hours)) {
         return null;
       }
-      return fractionalHourToDate(
+      return fractionalHourToInstant(
         spa.year,
         spa.month,
         spa.day,
-        hours,
-        spa.timezone
+        hours
       );
     };
 
     twilight = {
-      civilDawn: twilightToDate(civil.sunrise),
-      civilDusk: twilightToDate(civil.sunset),
-      nauticalDawn: twilightToDate(nautical.sunrise),
-      nauticalDusk: twilightToDate(nautical.sunset),
-      astronomicalDawn: twilightToDate(astronomical.sunrise),
-      astronomicalDusk: twilightToDate(astronomical.sunset),
+      civilDawn: twilightToInstant(civil.sunrise),
+      civilDusk: twilightToInstant(civil.sunset),
+      nauticalDawn: twilightToInstant(nautical.sunrise),
+      nauticalDusk: twilightToInstant(nautical.sunset),
+      astronomicalDawn: twilightToInstant(astronomical.sunrise),
+      astronomicalDusk: twilightToInstant(astronomical.sunset),
       goldenHour: {
-        morning: { start: twilightToDate(spa.sunrise), end: twilightToDate(golden.sunrise) },
-        evening: { start: twilightToDate(golden.sunset), end: twilightToDate(spa.sunset) },
+        morning: { start: twilightToInstant(spa.sunrise), end: twilightToInstant(golden.sunrise) },
+        evening: { start: twilightToInstant(golden.sunset), end: twilightToInstant(spa.sunset) },
       },
       blueHour: {
-        morning: { start: twilightToDate(blue.sunrise), end: twilightToDate(spa.sunrise) },
-        evening: { start: twilightToDate(spa.sunset), end: twilightToDate(blue.sunset) },
+        morning: { start: twilightToInstant(blue.sunrise), end: twilightToInstant(spa.sunrise) },
+        evening: { start: twilightToInstant(spa.sunset), end: twilightToInstant(blue.sunset) },
       },
     };
   }
 
   return {
-    sunrise: toDate(spa.sunrise),
-    sunset: toDate(spa.sunset),
-    solarNoon: toDate(spa.suntransit),
+    sunrise: toInstant(spa.sunrise),
+    sunset: toInstant(spa.sunset),
+    solarNoon: toInstant(spa.suntransit),
     twilight,
   };
 }

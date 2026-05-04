@@ -6,6 +6,7 @@
  * to determine precise solar position and rise/transit/set times.
  */
 
+import type { Temporal } from '@js-temporal/polyfill';
 import { SpaData, SpaFunction, SpaOptions } from './types';
 import { REFRACTION_CORRECTION, INVALID_VALUE } from './constants';
 import {
@@ -339,20 +340,16 @@ export function spaCalculate(spa: SpaData): number {
 }
 
 /**
- * Initialize SPA data from a Date object and coordinates
+ * Initialize SPA data from a Temporal.Instant and coordinates
  */
-export function initSpaFromDate(
-  date: Date,
+export function initSpaFromTemporal(
+  instant: Temporal.Instant,
   latitude: number,
   longitude: number,
   options: SpaOptions = {}
 ): SpaData {
   const spa = createSpaData();
-  const dateTime = resolveDateTimeComponents(
-    date,
-    options.timezone,
-    options.timezoneId
-  );
+  const dateTime = resolveDateTimeComponents(instant);
 
   spa.year = dateTime.year;
   spa.month = dateTime.month;
@@ -362,7 +359,7 @@ export function initSpaFromDate(
   spa.second = dateTime.second;
   spa.timezone = dateTime.timezone;
 
-  spa.timezoneId = options.timezoneId ?? '';
+  spa.timezoneId = '';
 
   spa.latitude = latitude;
   spa.longitude = longitude;

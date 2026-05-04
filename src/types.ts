@@ -3,6 +3,8 @@
  * Based on NREL's Solar Position Algorithm for Solar Radiation Applications
  */
 
+import type { Temporal } from '@js-temporal/polyfill';
+
 /**
  * Output calculation modes
  */
@@ -57,10 +59,6 @@ export interface SpaOptions {
   azimuthRotation?: number;
   /** Atmospheric refraction at sunrise/sunset in degrees (default: 0.5667) */
   atmosphericRefraction?: number;
-  /** Timezone offset in hours from UTC (e.g., -5 for EST). Takes precedence over timezoneId. */
-  timezone?: number;
-  /** IANA Timezone ID (e.g., 'America/New_York'). Used to resolve the correct local date and UTC offset when timezone is omitted. */
-  timezoneId?: string;
 }
 
 /**
@@ -68,26 +66,26 @@ export interface SpaOptions {
  */
 export interface TwilightTimes {
   /** Civil twilight begins (sun 6° below horizon) */
-  civilDawn: Date | null;
+  civilDawn: Temporal.Instant | null;
   /** Civil twilight ends (sun 6° below horizon) */
-  civilDusk: Date | null;
+  civilDusk: Temporal.Instant | null;
   /** Nautical twilight begins (sun 12° below horizon) */
-  nauticalDawn: Date | null;
+  nauticalDawn: Temporal.Instant | null;
   /** Nautical twilight ends (sun 12° below horizon) */
-  nauticalDusk: Date | null;
+  nauticalDusk: Temporal.Instant | null;
   /** Astronomical twilight begins (sun 18° below horizon) */
-  astronomicalDawn: Date | null;
+  astronomicalDawn: Temporal.Instant | null;
   /** Astronomical twilight ends (sun 18° below horizon) */
-  astronomicalDusk: Date | null;
+  astronomicalDusk: Temporal.Instant | null;
   /** Golden hour begins/ends (sun 6° above horizon to 4° below horizon) */
   goldenHour: {
-    morning: { start: Date | null, end: Date | null };
-    evening: { start: Date | null, end: Date | null };
+    morning: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+    evening: { start: Temporal.Instant | null, end: Temporal.Instant | null };
   } | null;
   /** Blue hour begins/ends (sun 4° below horizon to 6° below horizon) */
   blueHour: {
-    morning: { start: Date | null, end: Date | null };
-    evening: { start: Date | null, end: Date | null };
+    morning: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+    evening: { start: Temporal.Instant | null, end: Temporal.Instant | null };
   } | null;
 }
 

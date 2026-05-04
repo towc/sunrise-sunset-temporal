@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill';
+
 declare module 'sunrise-sunset-js' {
   /**
    * Optional parameters for SPA calculations
@@ -46,51 +48,61 @@ declare module 'sunrise-sunset-js' {
    */
   export interface TwilightTimes {
     /** Civil twilight begins (sun 6° below horizon) */
-    civilDawn: Date | null;
+    civilDawn: Temporal.Instant | null;
     /** Civil twilight ends (sun 6° below horizon) */
-    civilDusk: Date | null;
+    civilDusk: Temporal.Instant | null;
     /** Nautical twilight begins (sun 12° below horizon) */
-    nauticalDawn: Date | null;
+    nauticalDawn: Temporal.Instant | null;
     /** Nautical twilight ends (sun 12° below horizon) */
-    nauticalDusk: Date | null;
+    nauticalDusk: Temporal.Instant | null;
     /** Astronomical twilight begins (sun 18° below horizon) */
-    astronomicalDawn: Date | null;
+    astronomicalDawn: Temporal.Instant | null;
     /** Astronomical twilight ends (sun 18° below horizon) */
-    astronomicalDusk: Date | null;
+    astronomicalDusk: Temporal.Instant | null;
+    /** Golden hour begins/ends */
+    goldenHour: {
+      morning: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+      evening: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+    } | null;
+    /** Blue hour begins/ends */
+    blueHour: {
+      morning: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+      evening: { start: Temporal.Instant | null, end: Temporal.Instant | null };
+    } | null;
   }
 
   /**
    * Get the sunrise time for a given location and date
-   * @returns Date object representing sunrise time, or null if sun doesn't rise (polar night)
+   * @returns Temporal.Instant representing sunrise time, or null if sun doesn't rise (polar night)
    */
   export function getSunrise(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
-  ): Date | null;
+  ): Temporal.Instant | null;
 
   /**
    * Get the sunset time for a given location and date
-   * @returns Date object representing sunset time, or null if sun doesn't set (polar day)
+   * @returns Temporal.Instant representing sunset time, or null if sun doesn't set (polar day)
    */
   export function getSunset(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
-  ): Date | null;
+  ): Temporal.Instant | null;
 
   /**
    * Get the solar noon (sun transit) time for a given location and date
-   * @returns Date object representing solar noon time, or null on calculation error
+   * @returns Temporal.Instant representing solar noon time, or null on calculation error
    */
   export function getSolarNoon(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
-  ): Date | null;
+  ): Temporal.Instant | null;
 
   /**
    * Get the current solar position (zenith, azimuth, elevation, etc.)
@@ -99,7 +111,7 @@ declare module 'sunrise-sunset-js' {
   export function getSolarPosition(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
   ): SolarPosition | null;
 
@@ -110,7 +122,7 @@ declare module 'sunrise-sunset-js' {
   export function getTwilight(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
   ): TwilightTimes | null;
 
@@ -120,12 +132,12 @@ declare module 'sunrise-sunset-js' {
   export function getSunTimes(
     latitude: number,
     longitude: number,
-    date?: Date,
+    instant?: Temporal.Instant,
     options?: SpaOptions
   ): {
-    sunrise: Date | null;
-    sunset: Date | null;
-    solarNoon: Date | null;
+    sunrise: Temporal.Instant | null;
+    sunset: Temporal.Instant | null;
+    solarNoon: Temporal.Instant | null;
     twilight: TwilightTimes | null;
   };
 }

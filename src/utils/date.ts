@@ -2,6 +2,8 @@
  * Date and Julian day calculation utilities for Solar Position Algorithm
  */
 
+import { Temporal } from '../temporal';
+
 export interface DateTimeComponents {
   year: number;
   month: number;
@@ -9,69 +11,6 @@ export interface DateTimeComponents {
   hour: number;
   minute: number;
   second: number;
-}
-
-const timeZoneDateTimeFormatters = new Map<string, Intl.DateTimeFormat>();
-
-function getTimeZoneDateTimeFormatter(timezoneId: string): Intl.DateTimeFormat {
-  let formatter = timeZoneDateTimeFormatters.get(timezoneId);
-
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezoneId,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hourCycle: 'h23',
-    });
-    timeZoneDateTimeFormatters.set(timezoneId, formatter);
-  }
-
-  return formatter;
-}
-
-function parseDateTimeComponents(
-  date: Date,
-  formatter: Intl.DateTimeFormat
-): DateTimeComponents {
-  const values = new Map<string, string>();
-
-  for (const part of formatter.formatToParts(date)) {
-    if (part.type !== 'literal') {
-      values.set(part.type, part.value);
-    }
-  }
-
-  return {
-    year: parseInt(values.get('year') ?? '0', 10),
-    month: parseInt(values.get('month') ?? '0', 10),
-    day: parseInt(values.get('day') ?? '0', 10),
-    hour: parseInt(values.get('hour') ?? '0', 10),
-    minute: parseInt(values.get('minute') ?? '0', 10),
-    second: parseInt(values.get('second') ?? '0', 10) + date.getUTCMilliseconds() / 1000,
-  };
-}
-
-function getOffsetHoursFromComponents(
-  date: Date,
-  components: DateTimeComponents
-): number {
-  const wholeSeconds = Math.floor(components.second);
-  const milliseconds = Math.round((components.second - wholeSeconds) * 1000);
-  const zonedTimestamp = Date.UTC(
-    components.year,
-    components.month - 1,
-    components.day,
-    components.hour,
-    components.minute,
-    wholeSeconds,
-    milliseconds
-  );
-
-  return (zonedTimestamp - date.getTime()) / 3600000;
 }
 
 /**
@@ -159,122 +98,24 @@ export function julianEphemerisMillennium(jce: number): number {
 }
 
 /**
- * Extract date components from a JavaScript Date object
- * Returns components in local time
- */
-export function extractLocalDateComponents(date: Date): {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-  timezone: number;
-} {
-  return {
-    year: date.getFullYear(),
-    month: date.getMonth() + 1,
-    day: date.getDate(),
-    hour: date.getHours(),
-    minute: date.getMinutes(),
-    second: date.getSeconds() + date.getMilliseconds() / 1000,
-    timezone: -date.getTimezoneOffset() / 60,
-  };
-}
-
-/**
- * Extract date components from a JavaScript Date object
- * Interprets the instant in a fixed UTC offset
- */
-export function extractFixedOffsetDateComponents(
-  date: Date,
-  timezone: number
-): DateTimeComponents {
-  const shifted = new Date(date.getTime() + timezone * 3600000);
-
-  return {
-    year: shifted.getUTCFullYear(),
-    month: shifted.getUTCMonth() + 1,
-    day: shifted.getUTCDate(),
-    hour: shifted.getUTCHours(),
-    minute: shifted.getUTCMinutes(),
-    second: shifted.getUTCSeconds() + shifted.getUTCMilliseconds() / 1000,
-  };
-}
-
-/**
- * Extract date components from a JavaScript Date object
- * Interprets the instant in the provided IANA timezone
- */
-export function extractTimeZoneDateComponents(
-  date: Date,
-  timezoneId: string
-): DateTimeComponents {
-  return parseDateTimeComponents(date, getTimeZoneDateTimeFormatter(timezoneId));
-}
-
-/**
- * Get the UTC offset in hours for an IANA timezone at a specific instant
- */
-export function getTimeZoneOffsetHours(
-  date: Date,
-  timezoneId: string
-): number {
-  return getOffsetHoursFromComponents(
-    date,
-    extractTimeZoneDateComponents(date, timezoneId)
-  );
-}
-
-/**
- * Resolve the calendar date/time context used by SPA calculations.
- * Explicit numeric offsets take precedence over timezone IDs.
+ * Resolve date/time components from a Temporal.Instant.
+ * Uses UTC date components and timezone offset of 0.
+ *
+ * This replaces the old approach of extracting components from a Date object,
+ * which was buggy because it depended on the server's local timezone.
  */
 export function resolveDateTimeComponents(
-  date: Date,
-  timezone?: number,
-  timezoneId?: string
+  instant: Temporal.Instant
 ): DateTimeComponents & { timezone: number } {
-  if (timezone !== undefined) {
-    return {
-      ...extractFixedOffsetDateComponents(date, timezone),
-      timezone,
-    };
-  }
+  const zdt = instant.toZonedDateTimeISO('UTC');
 
-  if (timezoneId) {
-    try {
-      const components = extractTimeZoneDateComponents(date, timezoneId);
-      return {
-        ...components,
-        timezone: getOffsetHoursFromComponents(date, components),
-      };
-    } catch {
-      // Fall back to the runtime's local timezone if the IANA timezone ID is invalid.
-    }
-  }
-
-  return extractLocalDateComponents(date);
-}
-
-/**
- * Extract date components from a JavaScript Date object
- * Returns components in UTC
- */
-export function extractUTCDateComponents(date: Date): {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-} {
   return {
-    year: date.getUTCFullYear(),
-    month: date.getUTCMonth() + 1,
-    day: date.getUTCDate(),
-    hour: date.getUTCHours(),
-    minute: date.getUTCMinutes(),
-    second: date.getUTCSeconds() + date.getUTCMilliseconds() / 1000,
+    year: zdt.year,
+    month: zdt.month,
+    day: zdt.day,
+    hour: 0,
+    minute: 0,
+    second: 0,
+    timezone: 0,
   };
 }

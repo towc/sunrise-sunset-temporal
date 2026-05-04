@@ -2,6 +2,7 @@
  * Time conversion utilities for Solar Position Algorithm
  */
 
+import { Temporal } from '../temporal';
 import { limitZero2one } from './math';
 
 /**
@@ -15,51 +16,28 @@ export function dayfracToLocalHr(dayfrac: number, timezone: number): number {
 }
 
 /**
- * Convert fractional hours to Date object
- * @param year - Local calendar year for the calculated sun time
- * @param month - Local calendar month for the calculated sun time
- * @param day - Local calendar day for the calculated sun time
- * @param fractionalHour - Hour as fractional value (0-24)
- * @param timezone - Timezone offset in hours (negative west of Greenwich)
- * @returns Date object representing the time
+ * Convert fractional hours to Temporal.Instant
+ * @param year - UTC calendar year for the calculated sun time
+ * @param month - UTC calendar month for the calculated sun time
+ * @param day - UTC calendar day for the calculated sun time
+ * @param fractionalHour - Hour as fractional value (relative to UTC midnight, can exceed 24 or be negative)
+ * @returns Temporal.Instant representing the time, or null for invalid values
  */
-export function fractionalHourToDate(
+export function fractionalHourToInstant(
   year: number,
   month: number,
   day: number,
-  fractionalHour: number,
-  timezone: number
-): Date {
-  // Handle invalid values (polar day/night)
-  if (fractionalHour < 0 || !isFinite(fractionalHour)) {
-    return new Date(NaN);
+  fractionalHour: number
+): Temporal.Instant | null {
+  if (!isFinite(fractionalHour)) {
+    return null;
   }
 
-  // Convert fractional hour to milliseconds from midnight UTC
-  const hours = Math.floor(fractionalHour);
-  const minutesDecimal = (fractionalHour - hours) * 60;
-  const minutes = Math.floor(minutesDecimal);
-  const secondsDecimal = (minutesDecimal - minutes) * 60;
-  const seconds = Math.floor(secondsDecimal);
-  const milliseconds = Math.round((secondsDecimal - seconds) * 1000);
+  const totalNanoseconds = Math.round(fractionalHour * 3_600_000_000_000);
+  const duration = Temporal.Duration.from({ nanoseconds: totalNanoseconds });
+  const plainDateTime = Temporal.PlainDateTime.from({ year, month, day }).add(duration);
 
-  // Create a new date starting from the local calendar day at midnight UTC
-  const result = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day,
-      0, 0, 0, 0
-    )
-  );
-
-  // The fractional hour is in local time, so we need to convert to UTC
-  // Local time = UTC + timezone, so UTC = Local - timezone
-  const utcHours = hours - timezone;
-  
-  result.setUTCHours(utcHours, minutes, seconds, milliseconds);
-
-  return result;
+  return plainDateTime.toZonedDateTime('UTC').toInstant();
 }
 
 /**
